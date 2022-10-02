@@ -1,14 +1,11 @@
-import requests
-from bs4 import BeautifulSoup
 from bcf_archive.archive import scrape
 from pathlib import Path
 
 import json
 
-cookie = json.load("secret.json")
-already_done = []
+cookie = json.load(open("secret.json", 'r'))
 
-streams = scrape.get_stream_ids('marine')["ids"]
+streams = scrape.get_stream_ids('marine')['archives']
+# print(len(streams))
 for each_stream in streams:
-    if each_stream not in already_done:
-        id_handler = scrape(each_stream, each_stream, cookie)
+    print(each_stream)
