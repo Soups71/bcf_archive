@@ -72,12 +72,9 @@ class scrape:
                 count += 1
             
     def get_stream_ids(audio_type):
-        tds = []
-        id_arr = []
         id_data = {
             "ids":[]
         }
-        results = None
         countTotal = 0
 
         for x in range(0,51):
@@ -91,24 +88,15 @@ class scrape:
                     statusData = row.findAll("td", {"class": "online"})
                     for status in statusData:
                         online = status.get_text()
-                        #print(online)
                         if online == "Online":
                             idData = row.findAll("td", {"class": "w1p"})
-                    #print(idData)
                             for id in idData:
                                 links = id.findAll("a")
                                 for link in links:
                                     link_url = link["href"]
                                     just_id = link_url.split("/")[-1]
-                                    id_arr.append(just_id)
-                                    #print(f"ID: {link_url}\n")
-                                    #print(link)
                                     text = link.get_text()
-                                    # print(id_data["ids"])
                                     id_data["ids"].append({"name": text, "id":just_id})
-                                    # print(text)
-                                    # id_arr.append([text, just_id])
-                                    # print(f'{text}: {just_id}')
             countTotal = countTotal + 1
         return(id_data)
             
