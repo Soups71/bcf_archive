@@ -73,7 +73,7 @@ class scrape:
             
     def get_stream_ids(audio_type):
         id_data = {
-            "ids":[]
+            "archives":[]
         }
         countTotal = 0
 
@@ -96,7 +96,7 @@ class scrape:
                                     link_url = link["href"]
                                     just_id = link_url.split("/")[-1]
                                     text = link.get_text()
-                                    id_data["ids"].append({"name": text, "id":just_id})
+                                    id_data["archives"].append({"name": text, "id":just_id})
             countTotal = countTotal + 1
         return(id_data)
             
