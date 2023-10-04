@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
+
 class scrape:
     def __init__(self, stream_id, stream_name, secret) -> None:
         self.id = stream_id
@@ -16,44 +17,40 @@ class scrape:
             page = requests.get(URL, cookies=self.access)
             soup = BeautifulSoup(page.content, "lxml")
             # print(soup)
-            ids= soup.find("p").getText()
+            ids = soup.find("p").getText()
             searchable_ids = json.loads(ids)
-            searchable_ids = searchable_ids['data']
-            return(searchable_ids)
+            searchable_ids = searchable_ids["data"]
+            return searchable_ids
         except:
             return {}
-    
+
     def get_audio_url(self, id):
         URL = f"https://m.broadcastify.com/archives/idv2/{id}"
         try:
             page = requests.get(URL, cookies=self.access)
             soup = BeautifulSoup(page.content, "lxml")
-            ids= soup.find("audio")
-            url = (ids.attrs['src'])
+            ids = soup.find("audio")
+            url = ids.attrs["src"]
             return url
         except:
             return ""
-    
+
     def get_audio(self, audio_url, file_name):
         try:
-            r = requests.get(audio_url, cookies = self.access)
-            with open(file_name, 'wb') as writer:
+            r = requests.get(audio_url, cookies=self.access)
+            with open(file_name, "wb") as writer:
                 writer.write(r.content)
         except:
             return ""
 
     def get_id_audio(self, days_ago, folder):
-
         for day in range((days_ago), 0, -1):
             # print(day)
-            
-            working_date = (datetime.now() - timedelta(days=day))
-            
+
+            working_date = datetime.now() - timedelta(days=day)
+
             filename_date = working_date.strftime("%Y_%m_%d")
             url_date = working_date.strftime("%m/%d/%Y")
-            # print(folder)
-            # day_folder = Path(folder, filename_date)
-            # day_folder.mkdir(parents=True, exist_ok=True)
             print(f"Getting audio for {self.stream_name} on {filename_date}")
             ids = self.get_archive_ids(url_date)
             if ids == {}:
@@ -70,15 +67,15 @@ class scrape:
                     break
                 self.get_audio(audio_url, file_path)
                 count += 1
-            
+
     def get_stream_ids(audio_type):
-        id_data = {
-            "archives":[]
-        }
+        id_data = {"archives": []}
         countTotal = 0
 
-        for x in range(0,51):
-            URL = "https://www.broadcastify.com/listen/stid/" + str(x) + "/" +audio_type
+        for x in range(0, 51):
+            URL = (
+                "https://www.broadcastify.com/listen/stid/" + str(x) + "/" + audio_type
+            )
             page = requests.get(URL)
             soup = BeautifulSoup(page.content, "html.parser")
             divs = soup.findAll("table", {"class": "btable"})
@@ -96,9 +93,8 @@ class scrape:
                                     link_url = link["href"]
                                     just_id = link_url.split("/")[-1]
                                     text = link.get_text()
-                                    id_data["archives"].append({"name": text, "id":just_id})
+                                    id_data["archives"].append(
+                                        {"name": text, "id": just_id}
+                                    )
             countTotal = countTotal + 1
-        return(id_data)
-            
-
-
+        return id_data
